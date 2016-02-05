@@ -15,16 +15,16 @@ class HangpersonGame
   end
   
   def guess(letter)
-    raise ArgumentError if letter == nil || letter.empty? || (letter =~ /[a-zA-Z]/).nil?
-    if !(letter =~ /[A-Z]/).nil?
+    raise ArgumentError unless !letter.nil? && letter =~ /[a-zA-Z]/
+    letter = letter.downcase
+    if @guesses.include?(letter) || @wrong_guesses.include?(letter)
       return false
-    end
-    if @word.include?(letter) && !@guesses.include?(letter)
-      @guesses += letter
-    elsif !@word.include?(letter) && !@wrong_guesses.include?(letter)
-      @wrong_guesses += letter
     else
-      return false
+      if @word.include?(letter)
+        @guesses += letter
+      else
+        @wrong_guesses += letter
+      end
     end
     return true
   end
@@ -42,7 +42,7 @@ class HangpersonGame
   end
   
   def check_win_or_lose
-    if @guesses.length + @wrong_guesses.length < 7
+    if @wrong_guesses.length < 7
       if @word.eql?(self.word_with_guesses)
         return :win
       else
